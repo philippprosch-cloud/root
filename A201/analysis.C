@@ -75,12 +75,15 @@ void analysis::Loop()
 	  if (hit==j) {
 	    continue;}
           Double_t tot_sec=tot[j]*2.5; //converts tot to ns
-          if (tot_sec>tot_threshold){wireCorrHisto->Fill(renum(wire_le[hit]),renum(wire_le[j]));}
+          if (tot_sec>tot_threshold){
+            wireCorrHisto->Fill(renum(wire_le[hit]),renum(wire_le[j]));
+            //wireCorrHisto->Fill(wire_le[hit],wire_le[j]);
+          }
 	}
 
 	for (UInt_t j=0; j<nhits_le; j++) {
           Double_t tot_sec=tot[j]*2.5; //converts tot to ns
-          Double_t time=time_le[hit]*2.5;
+          Double_t time=time_le[j]*2.5;
           if (tot_sec>tot_threshold){ 
             // driftzeit vs drahtnummer
             wiredriftHisto->Fill(wire_le[hit],time);
@@ -105,7 +108,7 @@ void analysis::Loop()
    // meine histogramme :)
    wiredriftHisto->GetXaxis()->SetTitle("Drahtnummer");
    wiredriftHisto->GetYaxis()->SetTitle("Driftzeit / ns");
-   wiredriftHisto->Draw("colz");
+   //wiredriftHisto->Draw("colz");
 
    //tot
    driftTotHisto->GetXaxis()->SetTitle("Driftzeit / ns");
