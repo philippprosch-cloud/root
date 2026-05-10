@@ -46,10 +46,12 @@ void analysis::Loop()
 				 48,0.5,48.5, 251, -2.5/2., 250*2.5+2.5/2.);
    TH2 *driftTotHisto = new TH2D("drift_tot", "Driftzeit gegen TOT: gefiltert",
 				 251, -2.5/2., 250*2.5+2.5/2., 235, -2.5/2., 235*2.5 - 2.5/2);  
+  
+  TH1D* wireHisto = new TH1D("wire", "Drahtnummern", 48, 0.5+1, 48.5+1);
 
   
    TH1D* dzh = &*driftTimesHisto;
-   TH1D* odb = new TH1D("odb", "Orts-Driftzeitbeziehung", dzh->GetNbinsX(), dzh->GetXaxis()->GetXmin(), dzh->GetXaxis()->GetXmax());
+   TH1D* odb = new TH1D("odb", "Orts-Driftzeitbeziehung", 251, -2.5/2., 250*2.5+2.5/2.);
 
   
   Long64_t tot_threshold = 140 ; // in ns
@@ -72,6 +74,7 @@ void analysis::Loop()
     Double_t tot_sec=tot[hit]*2.5;
     if (tot_sec>tot_threshold){
 	  driftTimesHisto->Fill(time);
+    wireHisto->Fill(renum(wire_le[hit]));
       }
 
 
@@ -88,14 +91,16 @@ void analysis::Loop()
 	    continue;}
           Double_t tot_sec=tot[j]*2.5; //converts tot to ns
           if (tot_sec>tot_threshold){
-            wireCorrHisto->Fill(renum(wire_le[hit]),renum(wire_le[j]));
-            //wireCorrHisto->Fill(wire_le[hit],wire_le[j]);
+            wireCorrHisto->Fill(renum(wire_le[hit]), renum(wire_le[j]));
+            //wireCorrHisto->Fill(wire_le[hit], wire_le[j]);
           }
 	}
 
 	for (UInt_t j=0; j<nhits_le; j++) {
+
           Double_t tot_sec=tot[j]*2.5; //converts tot to ns
           Double_t time=time_le[j]*2.5;
+
           if (tot_sec>tot_threshold){ 
             // driftzeit vs drahtnummer
             wiredriftHisto->Fill(wire_le[hit],time);
@@ -131,7 +136,11 @@ void analysis::Loop()
    //odb
    odb->GetXaxis()->SetTitle("Driftzeit / ns");
    odb->GetYaxis()->SetTitle("Abstand / mm");
-   odb->Draw(); 
+   //odb->Draw(); 
+
+   wireHisto->GetXaxis()->SetTitle("Drahtnummer");
+   wireHisto->GetYaxis()->SetTitle("Trefferanzahl");
+   wireHisto->Draw(); 
 
 }
 
