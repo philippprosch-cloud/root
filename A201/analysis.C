@@ -48,6 +48,10 @@ void analysis::Loop()
 				 251, -2.5/2., 250*2.5+2.5/2., 235, -2.5/2., 235*2.5 - 2.5/2);  
 
   
+   TH1D* dzh = &*driftTimesHisto;
+   TH1D* odb = new TH1D("odb", "Orts-Driftzeitbeziehung", dzh->GetNbinsX(), dzh->GetXaxis()->GetXmin(), dzh->GetXaxis()->GetXmax());
+
+  
   Long64_t tot_threshold = 140 ; // in ns
   
    if (fChain == 0) return;
@@ -69,6 +73,14 @@ void analysis::Loop()
     if (tot_sec>tot_threshold){
 	  driftTimesHisto->Fill(time);
       }
+
+
+    Double_t sum = 0;
+    for (UInt_t bin = 1; bin <= dzh->GetNbinsX(); ++bin){
+    sum += dzh->GetBinContent(bin);
+    odb->SetBinContent(bin,sum);
+    }
+    odb->Scale(8.5/sum);
 
 
 	for (UInt_t j=0; j<nhits_le; j++) {
@@ -114,6 +126,12 @@ void analysis::Loop()
    driftTotHisto->GetXaxis()->SetTitle("Driftzeit / ns");
    driftTotHisto->GetYaxis()->SetTitle("TOT / ns");
    //driftTotHisto->Draw("colz");
+
+
+   //odb
+   odb->GetXaxis()->SetTitle("Driftzeit / ns");
+   odb->GetYaxis()->SetTitle("Abstand / mm");
+   odb->Draw(); 
 
 }
 
