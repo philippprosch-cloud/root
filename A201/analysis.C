@@ -6,6 +6,7 @@
 #include <TROOT.h>
 #include <TRint.h>
 #include <iostream>
+#include <math.h>
 
 int renum(int wire){
   if (wire % 2 == 1){
@@ -53,6 +54,9 @@ void analysis::Loop()
    TH1D* dzh = &*driftTimesHisto;
    TH1D* odb = new TH1D("odb", "Orts-Driftzeitbeziehung", 251, -2.5/2., 250*2.5+2.5/2.);
 
+   // assumes m = 20
+   TH1D* alphaHisto = new TH1D("alpha", "Winkelverteilung", 251, -0.9189, 1.0687);
+
   
   Long64_t tot_threshold = 140 ; // in ns
   
@@ -75,6 +79,9 @@ void analysis::Loop()
     if (tot_sec>tot_threshold){
 	  driftTimesHisto->Fill(time);
     wireHisto->Fill(renum(wire_le[hit]));
+
+    double alpha = atan((renum(wire_le[hit]) - 20)*0.85/13.3);
+    alphaHisto->Fill(alpha);
       }
 
 
@@ -103,7 +110,7 @@ void analysis::Loop()
 
           if (tot_sec>tot_threshold){ 
             // driftzeit vs drahtnummer
-            wiredriftHisto->Fill(wire_le[hit],time);
+            wiredriftHisto->Fill(renum(wire_le[hit]),time);
 
             // driftzeit/tot
             driftTotHisto->Fill(time, tot_sec);
@@ -140,7 +147,11 @@ void analysis::Loop()
 
    wireHisto->GetXaxis()->SetTitle("Drahtnummer");
    wireHisto->GetYaxis()->SetTitle("Trefferanzahl");
-   wireHisto->Draw(); 
+   //wireHisto->Draw(); 
+
+    alphaHisto->GetXaxis()->SetTitle("Winkel / rad");
+    alphaHisto->GetYaxis()->SetTitle("Trefferanzahl");
+    alphaHisto->Draw();
 
 }
 
