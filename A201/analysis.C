@@ -97,7 +97,7 @@ void analysis::Loop()
 	  if (hit==j) {
 	    continue;}
           Double_t tot_sec=tot[j]*2.5; //converts tot to ns
-          if (tot_sec>tot_threshold){
+          if (tot[j]*2.5 > tot_threshold && tot[hit]*2.5 > tot_threshold){
             wireCorrHisto->Fill(renum(wire_le[hit]), renum(wire_le[j]));
             //wireCorrHisto->Fill(wire_le[hit], wire_le[j]);
           }
@@ -108,7 +108,7 @@ void analysis::Loop()
           Double_t tot_sec=tot[j]*2.5; //converts tot to ns
           Double_t time=time_le[j]*2.5;
 
-          if (tot_sec>tot_threshold){ 
+          if (tot[j]*2.5 > tot_threshold && tot[hit]*2.5 > tot_threshold){ 
             // driftzeit vs drahtnummer
             wiredriftHisto->Fill(renum(wire_le[hit]),time);
 
@@ -138,7 +138,6 @@ void analysis::Loop()
    driftTotHisto->GetXaxis()->SetTitle("Driftzeit / ns");
    driftTotHisto->GetYaxis()->SetTitle("TOT / ns");
    //driftTotHisto->Draw("colz");
-
 
    //odb
    odb->GetXaxis()->SetTitle("Driftzeit / ns");
