@@ -57,7 +57,7 @@ void analysis::Loop()
 
    // assumes m = 20, hard to see
    TH1D* alphaHisto = new TH1D("alpha", "Winkelverteilung", 251, -0.90, 1.1);
-    TF1* cos_fit = new TF1("cos fit", "[0]*cos(x*[1]+[2])", -0.90, 1.1);
+    TF1* cos_fit = new TF1("cos fit", "[0]*pow(abs(cos(x-[1])), [2])", -0.90, 1.1);
 
   
   Long64_t tot_threshold = 140 ; // in ns
@@ -86,10 +86,7 @@ void analysis::Loop()
     alphaHisto->Fill(alpha);
       }
 
-  // cos fit for alpha distribution
-   cos_fit->SetParameters(1400, 0, 2);
 
-   alphaHisto->Fit("cos fit", "R");
 
 
     Double_t sum = 0;
@@ -133,6 +130,12 @@ void analysis::Loop()
             
       // if (Cut(ientry) < 0) continue;
    }
+  // cos fit for alpha distribution
+   cos_fit->SetParameters(1400, 0, 2);
+
+   alphaHisto->Fit("cos fit", "R");
+
+
    driftTimesHisto->GetXaxis()->SetTitle("Zeit / ns");
    driftTimesHisto->GetYaxis()->SetTitle("Trefferanzahl");
    //gStyle->SetOptStat(0);
