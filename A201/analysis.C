@@ -7,6 +7,7 @@
 #include <TRint.h>
 #include <iostream>
 #include <math.h>
+#include "TF1.h"
 
 int renum(int wire){
   if (wire % 2 == 1){
@@ -54,8 +55,9 @@ void analysis::Loop()
    TH1D* dzh = &*driftTimesHisto;
    TH1D* odb = new TH1D("odb", "Orts-Driftzeitbeziehung", 251, -2.5/2., 250*2.5+2.5/2.);
 
-   // assumes m = 20
+   // assumes m = 20, hard to see
    TH1D* alphaHisto = new TH1D("alpha", "Winkelverteilung", 251, -0.90, 1.1);
+    TF1* cos_fit = new TF1("cos fit", "[0]*cos(x*[1]+[2])", -0.90, 1.1);
 
   
   Long64_t tot_threshold = 140 ; // in ns
@@ -84,6 +86,11 @@ void analysis::Loop()
     alphaHisto->Fill(alpha);
       }
 
+  // cos fit for alpha distribution
+   cos_fit->SetParameters(1400, 0, 2);
+
+   alphaHisto->Fit("cos fit", "R");
+
 
     Double_t sum = 0;
     for (UInt_t bin = 1; bin <= dzh->GetNbinsX(); ++bin){
@@ -99,6 +106,11 @@ void analysis::Loop()
           Double_t tot_sec=tot[j]*2.5; //converts tot to ns
           if (tot[j]*2.5 > tot_threshold && tot[hit]*2.5 > tot_threshold){
             wireCorrHisto->Fill(renum(wire_le[hit]), renum(wire_le[j]));
+
+           // if (wire_le[hit]== wire_le[j]) {
+           //   std::cout << "Drahtnummer: " << wire_le[hit] << " ,j: " << j << " ,hit: " << hit << std::endl;
+           // }
+           
             //wireCorrHisto->Fill(wire_le[hit], wire_le[j]);
           }
 	}
@@ -151,6 +163,7 @@ void analysis::Loop()
     alphaHisto->GetXaxis()->SetTitle("Winkel / rad");
     alphaHisto->GetYaxis()->SetTitle("Trefferanzahl");
     alphaHisto->Draw();
+    cos_fit->Draw("same");
 
 }
 
