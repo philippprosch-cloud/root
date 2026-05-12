@@ -55,7 +55,7 @@ void analysis::Loop()
    TH1D* odb = new TH1D("odb", "Orts-Driftzeitbeziehung", 251, -2.5/2., 250*2.5+2.5/2.);
 
    // assumes m = 20
-   TH1D* alphaHisto = new TH1D("alpha", "Winkelverteilung", 251, -0.9189, 1.0687);
+   TH1D* alphaHisto = new TH1D("alpha", "Winkelverteilung", 251, -0.90, 1.1);
 
   
   Long64_t tot_threshold = 140 ; // in ns
