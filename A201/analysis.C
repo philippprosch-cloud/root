@@ -128,16 +128,22 @@ void analysis::Loop()
         }
 
 
-        if(abs( renum(wire_le[hit]) - renum(wire_le[j]) ) == 1 && tot[j]*2.5 > tot_threshold && tot[hit]*2.5 > tot_threshold){
-          
-          double d1 = odb->GetBinContent(odb->FindBin(time_le[hit]*2.5));
-          double d2 = odb->GetBinContent(odb->FindBin(time_le[j]*2.5));
-          double sum = d1 + d2;
+        if( renum(wire_le[hit]) - renum(wire_le[j])  == 1 && tot[j]*2.5 > tot_threshold && tot[hit]*2.5 > tot_threshold){
+
+          double alpha = atan((renum(wire_le[hit]) - 20)*0.85/13.3);
+          //std::cout << "alpha: " << alpha << std::endl;
+          if (alpha > -10. /360. * 2 * M_PI && alpha < 10 /360. * 2 * M_PI) {
+
+          double d1   = odb->GetBinContent(odb->FindBin(time_le[hit]*2.5));
+          double d2   = odb->GetBinContent(odb->FindBin(time_le[j]*2.5));
+          double sum  = d1 + d2;
           double diff = d1 - d2;
-
           sum_diff->Fill(sum,diff);
+          
+          }
 
-	}}
+	}
+}
 
 
       }
