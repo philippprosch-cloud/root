@@ -56,8 +56,10 @@ void analysis::Loop()
    TH1D* odb = new TH1D("odb", "Orts-Driftzeitbeziehung", 251, -2.5/2., 250*2.5+2.5/2.);
 
    // assumes m = 20, hard to see
-   TH1D* alphaHisto = new TH1D("alpha", "Winkelverteilung", 251, -0.90, 1.1);
+  TH1D* alphaHisto = new TH1D("alpha", "Winkelverteilung", 251, -0.90, 1.1);
     TF1* cos_fit = new TF1("cos fit", "[0]*pow(abs(cos(x-[1])), [2])", -0.90, 1.1);
+
+  TH2D* sum_diff = new TH2D("sum_diff", "Summe und Differenz der Abstände benachbarter Drähte", 251, 0., 16, 251, -8.5, 8.5);
 
   
   Long64_t tot_threshold = 140 ; // in ns
@@ -125,7 +127,19 @@ void analysis::Loop()
             driftTotHisto->Fill(time, tot_sec);
         }
 
-	}
+
+        if(abs(renum(wire_le[hit]) - wire_le[j]) == 1 && tot[j]*2.5 > tot_threshold && tot[hit]*2.5 > tot_threshold){
+          
+          double d1 = odb->GetBinContent(odb->FindBin(time_le[hit]*2.5));
+          double d2 = odb->GetBinContent(odb->FindBin(time_le[j]*2.5));
+          double sum = d1 + d2;
+          double diff = d1 - d2;
+
+          sum_diff->Fill(sum,diff);
+
+	}}
+
+
       }
             
       // if (Cut(ientry) < 0) continue;
@@ -166,7 +180,11 @@ void analysis::Loop()
     alphaHisto->GetXaxis()->SetTitle("Winkel / rad");
     alphaHisto->GetYaxis()->SetTitle("Trefferanzahl");
     alphaHisto->Draw();
-    cos_fit->Draw("same");
+    //cos_fit->Draw("same");
+
+   sum_diff->GetXaxis()->SetTitle("Summe / mm");
+   sum_diff->GetYaxis()->SetTitle("Differenz / mm");
+   sum_diff->Draw("colz");
 
 }
 
