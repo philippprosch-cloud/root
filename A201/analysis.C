@@ -59,7 +59,7 @@ void analysis::Loop()
   TH1D* alphaHisto = new TH1D("alpha", "Winkelverteilung", 251, -0.90, 1.1);
     TF1* cos_fit = new TF1("cos fit", "[0]*pow(abs(cos(x-[1])), [2])", -0.90, 1.1);
 
-  TH2D* sum_diff = new TH2D("sum_diff", "Summe und Differenz der Abstände benachbarter Drähte", 251, 0., 16, 251, -8.5, 8.5);
+  TH2D* sum_diff = new TH2D("sum_diff", "Summe und Differenz der Abst#ddot{a}nde benachbarter Dr#ddot{a}hte", 50, -.5, 17.5, 50, -9, 9);
 
   
   Long64_t tot_threshold = 140 ; // in ns
@@ -128,7 +128,7 @@ void analysis::Loop()
         }
 
 
-        if(abs(renum(wire_le[hit]) - wire_le[j]) == 1 && tot[j]*2.5 > tot_threshold && tot[hit]*2.5 > tot_threshold){
+        if(abs( renum(wire_le[hit]) - renum(wire_le[j]) ) == 1 && tot[j]*2.5 > tot_threshold && tot[hit]*2.5 > tot_threshold){
           
           double d1 = odb->GetBinContent(odb->FindBin(time_le[hit]*2.5));
           double d2 = odb->GetBinContent(odb->FindBin(time_le[j]*2.5));
